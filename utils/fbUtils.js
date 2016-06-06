@@ -24,6 +24,7 @@ fbUtils.fbMessage = function(recipientId, msg, cb){
             message: {
                 text: msg
             },
+
         },
     };
     fbUtils.fbReq(opts, function(err, resp, data){
@@ -33,16 +34,21 @@ fbUtils.fbMessage = function(recipientId, msg, cb){
     });
 };
 
-fbUtils.firstEntityValue = function(entities, entity){
-    const val = entities && entities[entity] &&
-            Array.isArray(entities[entity]) &&
-            entities[entity].length > 0 &&
-            entities[entity][0].value
-        ;
-    if (!val) {
-        return null;
-    }
-    return typeof val === 'object' ? val.value : val;
+fbUtils.fbTemplateMessage = function(recipientId, msg, cb){
+    var opts = {
+        form: {
+            recipient: {
+                id: recipientId,
+            },
+            message: msg,
+
+        },
+    };
+    fbUtils.fbReq(opts, function(err, resp, data){
+        if (cb) {
+            cb(err || data.error && data.error.message, data);
+        }
+    });
 };
 
 
