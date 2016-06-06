@@ -79,7 +79,16 @@ botBrain.actions = {
     getCruiseInformation : function(sessionId,context,cb){
         //call cruise api
         // take the response object from cruise api
-        var callback = function(responseObj) {
+
+     /*   if(cruiseApi.getCode(context.name,context.type)) {
+           cms.buildGeneicMessage('cruiseCode', cms.send, sessionId,responseObj);
+           cms.buildButtonMessage('cruiseCode',cms.send,sessionId,responseObj);
+        } else {
+           cms.buildGeneicMessage('cruiseNoCode', cms.send, sessionId,responseObj);
+           cms.buildButtonMessage('cruiseNoCode',cms.send,sessionId,responseObj);
+        } */
+        //var callback = function(responseObj) {
+        var responseObj = {}
             try {
                 cms.buildGeneicMessage('mock',cms.send,sessionId,responseObj);
                 cms.buildButtonMessage('mock',cms.send,sessionId,responseObj);
@@ -90,10 +99,9 @@ botBrain.actions = {
             }
 
             cb();
-        };
+       // };
 
-        cruiseApi.makeApiCall(context, callback);
-
+        //cruiseApi.makeApiCall(context, callback);
     },
 
     getHotelInformation : function(sessionId,context,cb){

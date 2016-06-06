@@ -10,7 +10,7 @@ var config = require('../config/config')
 cruiseApi.getFilters = function() {
     
     var writeToFile = function (data) {
-        debug(data)
+        debug(data);
         fs.writeFile(config.apiCalls.filtersJsonFile, data, function(err) {
             if(err) {
                 return console.log(err);

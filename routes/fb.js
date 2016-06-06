@@ -61,6 +61,9 @@ router.post('/', function (req, res, next) {
                 }
             );
         }
+    } else if(messaging && messaging.postback) {
+        cruiseApi.makeApiCall(context, cb);
+        cb();
     }
     res.sendStatus(200);
 });

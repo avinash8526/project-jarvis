@@ -17,8 +17,15 @@ cms.buildButtonMessage = function(type,callback,sessionId,responseObj) {
             var mT = new messageTemplate.messageTemplateModel();
             callback(mT.buildButtonMessage("Search Cruice here",bM.getButtonsList()),sessionId);
         }
-    else {
-            // todo:
+        else if(type=='cruiseNoCode') {
+            var bM = new buttonModel.buttonModel();
+            for each in responseObj() {
+            bM.buildUrlButton("postback",responseObj.name,responseObj.code); }
+            var eM = new elementModel.elementModel();
+            eM.addElements(bM,"Cruise One","Subtitle Cruise","http://dreamatico.com/data_images/cruise/cruise-6.jpg");
+            eM.addElements(bM,"Cruise Two","Subtitle Cruise two","http://i2.cdn.turner.com/cnnnext/dam/assets/160108142736-regents-seven-seas-explorer-super-169.jpg");
+            var mT = new messageTemplate.messageTemplateModel();
+            callback(mT.buildGenericMessage(eM.getElementModel()),sessionId);
         }
     };
 
@@ -34,9 +41,6 @@ cms.buildGeneicMessage = function(type,callback,sessionId,responseObj){
         eM.addElements(bM,"Cruise Two","Subtitle Cruise two","http://i2.cdn.turner.com/cnnnext/dam/assets/160108142736-regents-seven-seas-explorer-super-169.jpg");
         var mT = new messageTemplate.messageTemplateModel();
         callback(mT.buildGenericMessage(eM.getElementModel()),sessionId);
-    }
-    else {
-        // todo:
     }
 };
 
