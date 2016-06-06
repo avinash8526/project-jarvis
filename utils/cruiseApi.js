@@ -107,7 +107,8 @@ cruiseApi.makeApiCall = function (context, callback) {
     };
 
     var processData = function (data) {
-        var processedData = [];
+        var result = {};
+        var cruises = [];
         var sailings = data.sailings;
         
         if(sailings && sailings.length > 5)
@@ -125,10 +126,11 @@ cruiseApi.makeApiCall = function (context, callback) {
             "&selected-option=cruise-line&cruise-line=" +
             config.apiCalls.targetUrlParametersMapping.cruiseLine[sailing.cruiseLine.name];
             
-            processedData.push(obj);
+            cruises.push(obj);
         });
 
-        return processedData;
+        result.cruises = cruises;
+        return result;
     };
 
     var url = prepareUrl(context);

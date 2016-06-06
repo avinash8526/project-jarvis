@@ -40,6 +40,27 @@ cms.buildGeneicMessage = function(type,callback,sessionId,responseObj){
     }
 };
 
+cms.sendCruiseSearchResult = function(callback, sessionId, responseObj) {
+    var expediaImgUrl = "https://www.expedia.com/_dms/header/logo.svg?locale=en_US&siteid=1";
+    var eM = new elementModel.elementModel();
+
+    // Adding cruise results
+    responseObj.cruises.forEach(function (cruiseDetail) {
+        var bM = new buttonModel.buttonModel();
+        bM.buildUrlButton("web_url", cruiseDetail.webUrl, "Book Now");
+        eM.addElements(bM, cruiseDetail.cruiseLineName, cruiseDetail.shipName, cruiseDetail.imageUrl);
+    });
+
+    // Adding Sort and Mail button
+    var additionalButtons = new buttonModel.buttonModel();
+    additionalButtons.buildPayLoadButton("postback", "SORT", "SORT_" + responseObj.destinationCode);
+    additionalButtons.buildPayLoadButton("postback", "MAIL", "MAIL_" + responseObj.destination);
+    eM.addElements(additionalButtons, "Additional", "Additional", expediaImgUrl);
+    var messageTemplate1 = new messageTemplate.messageTemplateModel();
+    var templateBody = messageTemplate1.buildGenericMessage(eM.getElementModel());
+    callback(templateBody, sessionId);
+}
+
 cms.send = function(message,sessionId){
         var strMessage = JSON.stringify(message);
         var recipientId = fbUtils.sessions[sessionId].fbid;

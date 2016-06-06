@@ -81,8 +81,9 @@ botBrain.actions = {
         // take the response object from cruise api
         var callback = function(responseObj) {
             try {
-                cms.buildGeneicMessage('mock',cms.send,sessionId,responseObj);
-                cms.buildButtonMessage('mock',cms.send,sessionId,responseObj);
+                responseObj.destination = "Bahamas";
+                responseObj.destinationCode = "BH";
+                cms.sendCruiseSearchResult(cms.send, sessionId, responseObj);
             }
             catch(error) {
                 debug(error);
