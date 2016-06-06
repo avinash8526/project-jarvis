@@ -3,7 +3,7 @@ var ourBrain = {};
 var cruiseApi = require('../utils/cruiseApi');
 var cms =  require('../utils/cms');
 
-ourBrain.getCruiseInformation = function(sessionId,context,callback){
+ourBrain.getCruiseInformation = function(sessionId,context){
 
     var buildLocationFoundMessage = function(responseObj) {
         try {
@@ -16,10 +16,9 @@ ourBrain.getCruiseInformation = function(sessionId,context,callback){
 
     cruiseApi.makeApiCall(context, buildLocationFoundMessage);
 
-    //if (callback && typeof(callback) === "function") {
-    //    cb('No \'' + action + '\' action found.');
-    //    callback();
-    //}
+    if (callback && typeof(callback) === "function") {
+        callback();
+    }
 
 };
 

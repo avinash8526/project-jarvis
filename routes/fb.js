@@ -52,7 +52,7 @@ router.post('/', function (req, res, next) {
                         //sort_By, sortOrder ={asc/desc}
                         //sort_destination_price
                         //sort_destination_asc/desc
-                        ourBrain.getCruiseInformation(sessionId, buildCruiseContext(payloadContext));
+                        ourBrain.getCruiseInformation(sessionId, payloadContext);
                         break;
 
                     case 'MAIL':
@@ -62,7 +62,7 @@ router.post('/', function (req, res, next) {
                         break;
 
                     case 'LOCATION':
-                        ourBrain.getCruiseInformation(sessionId, buildCruiseContext(payloadContext));
+                        ourBrain.getCruiseInformation(sessionId, payloadContext);
                         break;
 
                     default:
