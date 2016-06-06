@@ -77,7 +77,6 @@ router.post('/', function (req, res, next) {
                             'Context information is lost , please start again, we deeply regret for this'
                         );
                     }
-                    // CODE AVINASH
                     break;
                 case 'LOCATION':
                     //code neha
@@ -86,13 +85,8 @@ router.post('/', function (req, res, next) {
                     debug("Not a valid option");
 
             }
-            var destination = payloadContext[1];
-            var sortType = payloadContext[2];
 
         }
-    } else if(messaging && messaging.postback) {
-        cruiseApi.makeApiCall(context, cb);
-        cb();
     }
     res.sendStatus(200);
 });

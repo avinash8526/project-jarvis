@@ -31,11 +31,10 @@ cms.buildButtonMessage = function(type,callback,sessionId,responseObj) {
             callback(mT.buildGenericMessage(eM.getElementModel()),sessionId);
         }
         else if(type=='cruiseCodeNotFound') {
+            var eM = new elementModel.elementModel();
+            bM = new buttonModel.buttonModel();
             for (key in responseObj) {
-                var eM = new elementModel.elementModel();
-                bM = new buttonModel.buttonModel();
-                bM.buildPayLoadButton("postback",responseObj[key], "LOCATION_"+ responseObj[key]);
-                eM.addElements(bM.getButtonsList(),responseObj[key],"BAHAMAS","");
+                bM.buildPayLoadButton("postback",key, "LOCATION_"+ responseObj[key]);
             };
             mT = new messageTemplate.messageTemplateModel();
             callback(mT.buildButtonMessage("Select any of the location below",bM.getButtonsList()),sessionId);

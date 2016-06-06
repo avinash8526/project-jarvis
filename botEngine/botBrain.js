@@ -34,26 +34,8 @@ botBrain.firstEntityValue = function(entities, entity){
 
 botBrain.actions = {
     say : function(sessionId, context, message, cb) {
-        var recipientId = fbUtils.sessions[sessionId].fbid;
-        if (recipientId) {
-            fbUtils.fbMessage(recipientId, message, function(err, data){
-                if (err) {
-                    console.log(
-                        'Oops! An error occurred while forwarding the response to',
-                        recipientId,
-                        ':',
-                        err
-                    );
-                }
-
-                // Let's give the wheel back to our bot
-                cb();
-            });
-        } else {
-            console.log('Oops! Couldn\'t find user for session:', sessionId);
-            // Giving the wheel back to our bot
-            cb();
-        }
+        sendMessageToFb(sessionId,message);
+        cb();
     },
     merge : function(sessionId, context, entities, message, cb) {
         var currentContext = {};
@@ -102,8 +84,9 @@ botBrain.actions = {
             cruiseApi.makeApiCall(context, callbackTrue);
         }
         else {
+            sendMessageToFb(sessionId,"It seems we don't have cruises in location "+context.location);
            cruiseApi.getRandomCode("destination", callback);
-           // cruiseApi.makeApiCall(context, callback);
+
         }
 
         cb();
@@ -129,6 +112,29 @@ botBrain.actions = {
 
 
 };
+
+function sendMessageToFb(sessionId,message) {
+    var recipientId = fbUtils.sessions[sessionId].fbid;
+    if (recipientId) {
+        fbUtils.fbMessage(recipientId, message, function (err, data) {
+            if (err) {
+                console.log(
+                    'Oops! An error occurred while forwarding the response to',
+                    recipientId,
+                    ':',
+                    err
+                );
+            }
+
+            // Let's give the wheel back to our bot
+
+        });
+    }
+    else {
+        console.log('Oops! Couldn\'t find user for session:', sessionId);
+        // Giving the wheel back to our bot
+    }
+}
 
 module.exports = botBrain;
 

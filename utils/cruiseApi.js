@@ -61,8 +61,10 @@ cruiseApi.getRandomCode = function (type, callback) {
                 var randomCruise = {};
                 var count = 0;
                 for(key in jarvisFilters.destinations){
-                   if(count < 5){
-                       randomCruise[key] = jarvisFilters.destinations[key] ;
+                   if(count < 3){
+                       var obj_keys = Object.keys(jarvisFilters.destinations);
+                       var ran_key = obj_keys[Math.floor(Math.random() * obj_keys.length)];
+                       randomCruise[ran_key] = jarvisFilters.destinations[ran_key] ;
                        count ++;
                    }
                 }
@@ -111,6 +113,7 @@ cruiseApi.getCode = function (name, type) {
             break;
         }
         return code;
+
     };
 
     return getCodeFromData(jarvisFilters);
