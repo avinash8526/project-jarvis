@@ -25,7 +25,7 @@ config.apiCalls = {
     apiUrl : "http://cruise-api-service.us-west-2.int.expedia.com/search/sailings",
     filtersJsonFile : "jarvisFilters.json",
     apiParameters : [
-        "minPrice", "maxPrice", "sortBy", "sortOrder"
+        "minPrice", "maxPrice", "sortBy", "sortOrder","destinations"
     ],
     targetUrl : "https://www.expedia.com/Cruise-Search",
     targetUrlParametersMapping : {

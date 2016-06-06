@@ -10,21 +10,35 @@ var messageTemplate = require('../models/fbMessage/messageTemplateModel');
 var fbUtils = require('./fbUtils');
 
 cms.buildButtonMessage = function(type,callback,sessionId,responseObj) {
+        var bM;
         if(type == 'mock'){
-            var bM = new buttonModel.buttonModel();
+            bM = new buttonModel.buttonModel();
             bM.buildUrlButton("web_url","http://google.com","Google");
             bM.buildUrlButton("web_url","http://yahoo.com","Yahoo");
             var mT = new messageTemplate.messageTemplateModel();
-            callback(mT.buildButtonMessage("Search Cruice here",bM.getButtonsList()),sessionId);
+            callback(mT.buildButtonMessage("Search Cruise here",bM.getButtonsList()),sessionId);
         }
-        else if(type=='cruiseCodeNotFound') {
-            var bM = new buttonModel.buttonModel();
+        else if(type=='locationFound') {
             var eM = new elementModel.elementModel();
-            eM.addElements(bM,"Cruise One","Subtitle Cruise","http://dreamatico.com/data_images/cruise/cruise-6.jpg");
-            eM.addElements(bM,"Cruise Two","Subtitle Cruise two","http://i2.cdn.turner.com/cnnnext/dam/assets/160108142736-regents-seven-seas-explorer-super-169.jpg");
-            var mT = new messageTemplate.messageTemplateModel();
+            bM = new buttonModel.buttonModel();
+            responseObj.forEach(function(cruiseObj){
+                bM.buildUrlButton("web_url", cruiseObj.webUrl,"Book Now");
+                // to add more buttona
+              //  eM.addElements(bM.getButtonsList(),cruiseObj.cruiseLineName,cruiseObj.subTitle,cruiseObj.imageUrl);
+                });
+
+            mT = new messageTemplate.messageTemplateModel();
             callback(mT.buildGenericMessage(eM.getElementModel()),sessionId);
         }
+        else if(type=='cruiseCodeNotFound') {
+            responseObj.forEach(function(cruiseObj){
+                bM = new buttonModel.buttonModel();
+                bM.buildPayLoadButton("postback",cruiseObj.destination, "LOCATION_"+ cruiseObj.destination);
+            });
+            mT = new messageTemplate.messageTemplateModel();
+            callback(mT.buildButtonMessage("Select any of the location below",bM.getButtonsList()),sessionId);
+        }
+
     };
 
 cms.buildGeneicMessage = function(type,callback,sessionId,responseObj){

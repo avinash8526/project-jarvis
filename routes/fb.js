@@ -88,9 +88,6 @@ router.post('/', function (req, res, next) {
             }
             var destination = payloadContext[1];
             var sortType = payloadContext[2];
-
-
-
         }
     } else if(messaging && messaging.postback) {
         cruiseApi.makeApiCall(context, cb);

@@ -77,21 +77,36 @@ botBrain.actions = {
     },
 
     getCruiseInformation : function(sessionId,context,cb){
-        var responseObj = {}
-        try {
-            if (cruiseApi.getCode(context.name, context.type)) {
-            } else {
-                cruiseApi.makeApiCall(context, cb);
-                cms.buildButtonMessage('cruiseCodeNotFound', cms.send, sessionId, responseObj);
+        var callback = function(responseObj) {
+            try {
+                    cms.buildButtonMessage('cruiseCodeNotFound', cms.send, sessionId, responseObj);
+                }
+            catch (error) {
+                debug(error);
             }
-            cms.buildGeneicMessage('mock', cms.send, sessionId, responseObj);
-            cms.buildButtonMessage('mock', cms.send, sessionId, responseObj);
-        } catch(error) {
-            debug(error);
-            cb();
+
+        };
+
+        var callbackTrue = function(responseObj) {
+            try {
+                cms.buildButtonMessage('locationFound', cms.send, sessionId, responseObj);
+            }
+            catch (error) {
+                debug(error);
+            }
+        };
+
+        var destCode = cruiseApi.getCode(context.location, "destination");
+        if (destCode) {
+            context.destinations = destCode;
+            cruiseApi.makeApiCall(context, callbackTrue);
+        }
+        else {
+           cruiseApi.getRandomCode("destination", callback);
+           // cruiseApi.makeApiCall(context, callback);
         }
 
-            cb();
+        cb();
        // };
 
         //cruiseApi.makeApiCall(context, callback);

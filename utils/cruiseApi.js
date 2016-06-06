@@ -55,10 +55,24 @@ cruiseApi.getFilters = function() {
 
 }
 
+cruiseApi.getRandomCode = function (type, callback) {
+    var getRandomCodeFromData = function () {
+        switch (type) {
+            case "destination":
+                return jarvisFilters.destinations.slice(0,4);
+                break;
+
+        }
+
+    };
+    callback.call(null, getRandomCodeFromData(jarvisFilters));
+};
+
 cruiseApi.getCode = function (name, type) {
 
     var getCodeFromData = function (data) {
         var code = null;
+        var list = [];
 
         switch (type) {
             case "cruiseLine":
@@ -83,6 +97,7 @@ cruiseApi.getCode = function (name, type) {
 
             case "destination":
                 Object.keys(data.destinations).forEach(function (destinationName) {
+                    list.push(destinationName);
                     if(destinationName.indexOf(name) >= 0) {
                         code = data.destinations[destinationName];
                         return
@@ -94,42 +109,43 @@ cruiseApi.getCode = function (name, type) {
     };
 
     return getCodeFromData(jarvisFilters);
-}
+};
 
-cruiseApi.makeApiCall = function (context, callback) {
-    var prepareUrl = function (context) {
-        var url = config.apiCalls.apiUrl + "?";
-        config.apiCalls.apiParameters.forEach(function (parameter) {
-            if(context[parameter]) {
-                url += parameter + "=" + context[parameter] + "&";
-            }
-        });
-        return url;
-    };
+var prepareUrl = function (context) {
+    var url = config.apiCalls.apiUrl + "?";
+    config.apiCalls.apiParameters.forEach(function (parameter) {
+        if(context[parameter]) {
+            url += parameter + "=" + context[parameter] + "&";
+        }
+    });
+    return url;
+};
 
-    var processData = function (data) {
-        var processedData = [];
-        var sailings = data.sailings;
-        
-        if(sailings && sailings.length > 5)
-            sailings = sailings.slice(0, 5);
+var processData = function (data) {
+    var processedData = [];
+    var sailings = data.sailings;
 
-        sailings.forEach(function (sailing) {
-            var obj = {};
-            
-            obj.title = sailing.cruiseLine.name;
-            obj.subTitle = sailing.ship.name;
-            obj.imageUrl = sailing.ship.photoUrl;
-            obj.webUrl = config.apiCalls.targetUrl + "?destination=" + 
+    if(sailings && sailings.length > 5)
+        sailings = sailings.slice(0, 5);
+
+    sailings.forEach(function (sailing) {
+        var obj = {};
+
+        obj.title = sailing.cruiseLine.name;
+        obj.subTitle = sailing.ship.name;
+        obj.imageUrl = sailing.ship.photoUrl;
+        obj.webUrl = config.apiCalls.targetUrl + "?destination=" +
             config.apiCalls.targetUrlParametersMapping.destination[sailing.itinerary.destination.destination] +
             "&selected-option=cruise-line&cruise-line=" +
             config.apiCalls.targetUrlParametersMapping.cruiseLine[sailing.cruiseLine.name];
-            
-            processedData.push(obj);
-        });
 
-        return processedData;
-    };
+        processedData.push(obj);
+    });
+
+    return processedData;
+};
+
+cruiseApi.makeApiCall = function (context, callback) {
 
     var url = prepareUrl(context);
 
@@ -140,8 +156,6 @@ cruiseApi.makeApiCall = function (context, callback) {
             debug("Some error has occurred in making call to " + url + "  -- " + error)
         }
     });
-
-
-}
+};
 
 module.exports = cruiseApi;
