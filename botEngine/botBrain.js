@@ -34,26 +34,8 @@ botBrain.firstEntityValue = function(entities, entity){
 
 botBrain.actions = {
     say : function(sessionId, context, message, cb) {
-        var recipientId = fbUtils.sessions[sessionId].fbid;
-        if (recipientId) {
-            fbUtils.fbMessage(recipientId, message, function(err, data){
-                if (err) {
-                    console.log(
-                        'Oops! An error occurred while forwarding the response to',
-                        recipientId,
-                        ':',
-                        err
-                    );
-                }
-
-                // Let's give the wheel back to our bot
-                cb();
-            });
-        } else {
-            console.log('Oops! Couldn\'t find user for session:', sessionId);
-            // Giving the wheel back to our bot
-            cb();
-        }
+        sendMessageToFb(sessionId,message);
+        cb();
     },
     merge : function(sessionId, context, entities, message, cb) {
         var currentContext = {};
@@ -77,23 +59,40 @@ botBrain.actions = {
     },
 
     getCruiseInformation : function(sessionId,context,cb){
-        //call cruise api
-        // take the response object from cruise api
         var callback = function(responseObj) {
             try {
-                cms.buildGeneicMessage('mock',cms.send,sessionId,responseObj);
-                cms.buildButtonMessage('mock',cms.send,sessionId,responseObj);
-            }
-            catch(error) {
+                    cms.buildButtonMessage('cruiseCodeNotFound', cms.send, sessionId, responseObj);
+                }
+            catch (error) {
                 debug(error);
-                cb();
             }
 
-            cb();
         };
 
-        cruiseApi.makeApiCall(context, callback);
+        var callbackTrue = function(responseObj) {
+            try {
+                cms.buildButtonMessage('locationFound', cms.send, sessionId, responseObj);
+            }
+            catch (error) {
+                debug(error);
+            }
+        };
 
+        var destCode = cruiseApi.getCode(context.location.toLowerCase(), "destination");
+        if (destCode) {
+            context.destinations = destCode;
+            cruiseApi.makeApiCall(context, callbackTrue);
+        }
+        else {
+            sendMessageToFb(sessionId,"It seems we don't have cruises in location "+context.location);
+           cruiseApi.getRandomCode("destination", callback);
+
+        }
+
+        cb();
+       // };
+
+        //cruiseApi.makeApiCall(context, callback);
     },
 
     getHotelInformation : function(sessionId,context,cb){
@@ -113,6 +112,29 @@ botBrain.actions = {
 
 
 };
+
+function sendMessageToFb(sessionId,message) {
+    var recipientId = fbUtils.sessions[sessionId].fbid;
+    if (recipientId) {
+        fbUtils.fbMessage(recipientId, message, function (err, data) {
+            if (err) {
+                console.log(
+                    'Oops! An error occurred while forwarding the response to',
+                    recipientId,
+                    ':',
+                    err
+                );
+            }
+
+            // Let's give the wheel back to our bot
+
+        });
+    }
+    else {
+        console.log('Oops! Couldn\'t find user for session:', sessionId);
+        // Giving the wheel back to our bot
+    }
+}
 
 module.exports = botBrain;
 

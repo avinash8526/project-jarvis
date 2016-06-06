@@ -77,7 +77,6 @@ router.post('/', function (req, res, next) {
                             'Context information is lost , please start again, we deeply regret for this'
                         );
                     }
-                    // CODE AVINASH
                     break;
                 case 'LOCATION':
                     //code neha
@@ -86,7 +85,6 @@ router.post('/', function (req, res, next) {
                     debug("Not a valid option");
 
             }
-
 
         }
     }
