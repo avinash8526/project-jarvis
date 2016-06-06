@@ -6,18 +6,23 @@ var ourBrain = {};
 var cruiseApi = require('../utils/cruiseApi');
 var cms =  require('../utils/cms');
 
-ourBrain.getCruiseInformation = function(sessionId,data){
-    var callback = function(data) {
+ourBrain.getCruiseInformation = function(sessionId,context){
+    var callback = function(responseObj) {
         try {
-            cms.buildGeneicMessage('mock',cms.send,sessionId,data);
-            cms.buildButtonMessage('mock',cms.send,sessionId,data);
+            //cms.buildGeneicMessage('mock', cms.send, sessionId, responseObj);
+            //cms.buildButtonMessage('mock', cms.send, sessionId, responseObj);
+            cms.buildButtonMessage('cruiseCodeNotFound', cms.send, sessionId, responseObj);
         }
-        catch(error) {
+        catch (error) {
             debug(error);
         }
     };
-
-    cruiseApi.makeApiCall(data, callback);
+    if (context.location == cruiseApi.getCode(context.location, "destination")) {
+        cms.buildButtonMessage('locationFound', cms.send, sessionId, responseObj);
+    }
+    else {
+        cruiseApi.makeApiCall(context, callback);
+    }
 
     if (callback && typeof(callback) === "function") {
         callback();
@@ -32,4 +37,4 @@ ourBrain.getHotelInformation = function(sessionID,data,callback) {
 };
 
 
-module.exports = ourBrain;
+module.exports = ourrBain;

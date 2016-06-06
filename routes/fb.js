@@ -9,6 +9,7 @@ var fbUtils = require('../utils/fbUtils');
 var botBrain = require('../botEngine/botBrain');
 var Wit = require('../botEngine/wit').Wit;
 var ourBrain = require('../utils/ourBrain');
+var debug = require('debug')('project-jarvis:fbJS');
 var wit = new Wit(config.WIT_TOKEN, botBrain.actions);
 
 router.get('/', function (req, res, next) {
@@ -71,8 +72,26 @@ router.post('/', function (req, res, next) {
             //sort_destination_asc/desc
 
             var payloadContext = String(messaging.payload).split("_");
-            var destination = payloadContext[1];
-            var sortType = payloadContext[2];
+            switch(payloadContext[0]) {
+                case 'SORT':
+                    //var destination = payloadContext[1];
+                    //var sortType = payloadContext[2];
+                    var cruiseContext = {};
+                    cruiseContext.location = payloadContext[1];
+                    cruiseContext.sortBy = payloadContext[2];
+                    ourBrain.getCruiseInformation(sessionId, cruiseContext);
+                    break;
+                case 'MAIL':
+                    // CODE AVINASH
+                    break;
+                case 'LOCATION':
+                    //code neha
+                    break;
+                default:
+                    debug("Not a valid option");
+
+            }
+
 
         }
     }
