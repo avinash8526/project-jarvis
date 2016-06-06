@@ -8,6 +8,7 @@ var router = express.Router();
 var fbUtils = require('../utils/fbUtils');
 var botBrain = require('../botEngine/botBrain');
 var Wit = require('../botEngine/wit').Wit;
+var debug = require('debug')('project-jarvis:fbJS');
 
 var wit = new Wit(config.WIT_TOKEN, botBrain.actions);
 
@@ -71,6 +72,20 @@ router.post('/', function (req, res, next) {
             //sort_destination_asc/desc
 
             var payloadContext = String(messaging.payload).split("_");
+            switch(payloadContext[0]) {
+                case 'SORT':
+                    // code UTK
+                    break;
+                case 'MAIL':
+                    // CODE AVINASH
+                    break;
+                case 'LOCATION':
+                    //code neha
+                    break;
+                default:
+                    debug("Not a valid option");
+
+            }
             var destination = payloadContext[1];
             var sortType = payloadContext[2];
 
