@@ -22,7 +22,7 @@ cruiseApi.getFilters = function() {
         processedData.destinations = {};
         var destinations = data.searchFilters.destinations;
         destinations.forEach(function(destination) {
-            processedData.destinations[destination.destination] = destination.code;
+            processedData.destinations[destination.destination.toLowerCase()] = destination.code;
         });
 
 

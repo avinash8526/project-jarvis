@@ -17,3 +17,6 @@ ourBrain.getHotelInformation = function(sessionID,data,callback) {
         callback();
     }
 };
+
+
+module.exports = ourBrain;
