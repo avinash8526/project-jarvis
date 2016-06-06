@@ -158,7 +158,7 @@ var buildCruiseContext = function (context) {
     var cruiseContext = {};
     cruiseContext[config.apiCalls.apiParameters[0]] = context[1];
     //cruiseContext.sortBy
-    if(payloadContext[2] != undefined) {
+    if(context[2] != undefined) {
         cruiseContext[config.apiCalls.apiParameters[1]] = context[2];
     }
     cruiseContext[config.apiCalls.apiParameters[2]] = "asc";
