@@ -18,4 +18,26 @@ if (!config.FB_PAGE_TOKEN) {
 config.FB_VERIFY_TOKEN = process.env.FB_VERIFY_TOKEN;
 
 
+config.entities = {};
+
+config.apiCalls = {
+    filterUrl : "http://cruise-api-service.us-west-2.int.expedia.com/search/sailings/filters",
+    apiUrl : "http://cruise-api-service.us-west-2.int.expedia.com/search/sailings",
+    filtersJsonFile : "jarvisFilters.json",
+    apiParameters : [
+        "minPrice", "maxPrice", "sortBy", "sortOrder"
+    ],
+    targetUrl : "https://www.expedia.com/Cruise-Search",
+    targetUrlParametersMapping : {
+        cruiseLine : {
+                'Carnival Cruise Lines' : 'carnival'
+        },
+        destination : {
+                'Caribbean' : 'caribbean'
+        }
+    }
+}
+
+
+
 module.exports = config;
