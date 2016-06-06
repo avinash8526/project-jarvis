@@ -110,6 +110,10 @@ cruiseApi.makeApiCall = function (context, callback) {
     var processData = function (data) {
         var processedData = [];
         var sailings = data.sailings;
+        
+        if(sailings && sailings.length > 5)
+            sailings = sailings.slice(0, 5);
+
         sailings.forEach(function (sailing) {
             var obj = {};
             
