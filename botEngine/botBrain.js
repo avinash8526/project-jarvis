@@ -15,7 +15,6 @@ botBrain.possibleEntityValues = [
     'location',
     'help',
     'mail_me',
-    'greet',
     'email',
     'hotel'
     // add more enttities
@@ -109,7 +108,7 @@ botBrain.actions = {
     cleanContext : function(sessionId,context,cb) {
 
         cb();
-    },
+    }
 
 
 };

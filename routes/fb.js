@@ -8,7 +8,7 @@ var router = express.Router();
 var fbUtils = require('../utils/fbUtils');
 var botBrain = require('../botEngine/botBrain');
 var Wit = require('../botEngine/wit').Wit;
-
+var ourBrain = require('../utils/ourBrain');
 var wit = new Wit(config.WIT_TOKEN, botBrain.actions);
 
 router.get('/', function (req, res, next) {
@@ -73,8 +73,6 @@ router.post('/', function (req, res, next) {
             var payloadContext = String(messaging.payload).split("_");
             var destination = payloadContext[1];
             var sortType = payloadContext[2];
-
-
 
         }
     }
