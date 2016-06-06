@@ -8,18 +8,7 @@ var config = require('../config/config')
 
 
 cruiseApi.getFilters = function() {
-    
-    var writeToFile = function (data) {
-        debug(data);
-        fs.writeFile(config.apiCalls.filtersJsonFile, data, function(err) {
-            if(err) {
-                return console.log(err);
-            }
 
-            console.log("The file was saved!");
-        });
-    };
-    
     var processData = function (data) {
         data = JSON.parse(data);
         var processedData = {};
@@ -50,14 +39,14 @@ cruiseApi.getFilters = function() {
         });
 
 
-        return JSON.stringify(processedData);
+        return processedData;
     };
 
 
     request(config.apiCalls.filterUrl, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var processedData = processData(body);
-            writeToFile(processedData); // Show the HTML for the Google homepage.
+            jarvisFilters = processedData;
         } else {
             debug("Some error has occurred in making call to " + config.apiCalls.filterUrl + "  -- " + error)
         }
@@ -104,13 +93,7 @@ cruiseApi.getCode = function (name, type) {
         return code;
     };
 
-    fs.readFile(config.apiCalls.filtersJsonFile, function (err, data) {
-        if (err) {
-            return console.error(err);
-        }
-        data = JSON.parse(data);
-        return getCodeFromData(data);
-    });
+    return getCodeFromData(jarvisFilters);
 }
 
 cruiseApi.makeApiCall = function (context, callback) {
