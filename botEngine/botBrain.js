@@ -84,8 +84,6 @@ botBrain.actions = {
                 responseObj.destination = "Bahamas";
                 responseObj.destinationCode = "BH";
                 cms.sendCruiseSearchResult(cms.send, sessionId, responseObj);
-                // cms.buildGeneicMessage('mock',cms.send,sessionId,responseObj);
-                // cms.buildButtonMessage('mock',cms.send,sessionId,responseObj);
             }
             catch(error) {
                 debug(error);
