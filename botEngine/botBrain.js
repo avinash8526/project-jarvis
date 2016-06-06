@@ -3,7 +3,29 @@
  */
 
 var fbUtils = require('../utils/fbUtils');
+var cms =  require('../utils/cms');
+var debug = require('debug')('project-jarvis:botBrainJS');
+
 var botBrain = {};
+var cruiseApi = require('../utils/cruiseApi');
+
+botBrain.possibleEntityValues = [
+            'cruise',
+            'greet',
+            'location'
+    // add more enttities
+];
+botBrain.firstEntityValue = function(entities, entity){
+    const val = entities && entities[entity] &&
+            Array.isArray(entities[entity]) &&
+            entities[entity].length > 0 &&
+            entities[entity][0].value
+        ;
+    if (!val) {
+        return null;
+    }
+    return typeof val === 'object' ? val.value : val;
+};
 
 botBrain.actions = {
     say : function(sessionId, context, message, cb) {
@@ -29,12 +51,46 @@ botBrain.actions = {
         }
     },
     merge : function(sessionId, context, entities, message, cb) {
-        // create context here
+        var currentContext = {};
+        if(botBrain.possibleEntityValues != undefined && botBrain.possibleEntityValues.length > 0){
+            for(val in botBrain.possibleEntityValues) {
+                var value = botBrain.possibleEntityValues[val]
+                currentContext[value]= botBrain.firstEntityValue(entities,value);
+            }
+        }
+        for(key in currentContext){
+            if(currentContext[key] != undefined){
+                context[key] = currentContext[key];
+            }
+        }
+        debug(context);
         cb(context);
     },
+
     error: function(sessionId, context, error) {
         console.log(error.message);
     },
+    
+    getCruiseInformation : function(sessionId,context,cb){
+        //call cruise api
+        // take the response object from cruise api
+        var callback = function(responseObj) {
+            try {
+                cms.buildGeneicMessage('mock',cms.send,sessionId,responseObj);
+                cms.buildButtonMessage('mock',cms.send,sessionId,responseObj);
+            }
+            catch(error) {
+                debug(error);
+                cb();
+            }
+
+            cb();    
+        };
+
+        cruiseApi.makeApiCall(context, callback);
+        
+    }
+
 };
 
 module.exports = botBrain;
