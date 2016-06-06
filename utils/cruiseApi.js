@@ -4,7 +4,7 @@ var debug = require('debug')('project-jarvis:server');
 var http = require('http');
 var request = require('request');
 var fs = require('fs');
-var config = require('../config/config')
+var config = require('../config/config');
 
 
 cruiseApi.getFilters = function() {
@@ -22,7 +22,7 @@ cruiseApi.getFilters = function() {
         processedData.destinations = {};
         var destinations = data.searchFilters.destinations;
         destinations.forEach(function(destination) {
-            processedData.destinations[destination.destination] = destination.code;
+            processedData.destinations[destination.destination.toLowerCase()] = destination.code;
         });
 
 
@@ -45,25 +45,30 @@ cruiseApi.getFilters = function() {
 
     request(config.apiCalls.filterUrl, function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            var processedData = processData(body);
-            jarvisFilters = processedData;
+            jarvisFilters = processData(body);
         } else {
             debug("Some error has occurred in making call to " + config.apiCalls.filterUrl + "  -- " + error)
         }
     });
 
 
-}
+};
 
 cruiseApi.getRandomCode = function (type, callback) {
-    var getRandomCodeFromData = function () {
+    var getRandomCodeFromData = function (data) {
         switch (type) {
             case "destination":
-                return jarvisFilters.destinations.slice(0,4);
+                var randomCruise = {};
+                var count = 0;
+                for(key in jarvisFilters.destinations){
+                   if(count < 5){
+                       randomCruise[key] = jarvisFilters.destinations[key] ;
+                       count ++;
+                   }
+                }
                 break;
-
         }
-
+        return randomCruise;
     };
     callback.call(null, getRandomCodeFromData(jarvisFilters));
 };
@@ -131,8 +136,9 @@ var processData = function (data) {
     sailings.forEach(function (sailing) {
         var obj = {};
 
-        obj.title = sailing.cruiseLine.name;
-        obj.subTitle = sailing.ship.name;
+        obj.cruiseLineName = sailing.cruiseLine.name;
+        obj.shipName = sailing.ship.name;
+        obj.price = sailing.leadInPrice;
         obj.imageUrl = sailing.ship.photoUrl;
         obj.webUrl = config.apiCalls.targetUrl + "?destination=" +
             config.apiCalls.targetUrlParametersMapping.destination[sailing.itinerary.destination.destination] +

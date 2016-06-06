@@ -24,21 +24,22 @@ cms.buildButtonMessage = function(type,callback,sessionId,responseObj) {
             responseObj.forEach(function(cruiseObj){
                 bM.buildUrlButton("web_url", cruiseObj.webUrl,"Book Now");
                 // to add more buttona
-              //  eM.addElements(bM.getButtonsList(),cruiseObj.cruiseLineName,cruiseObj.subTitle,cruiseObj.imageUrl);
+                eM.addElements(bM.getButtonsList(),cruiseObj.cruiseLineName + cruiseObj.price ,cruiseObj.subTitle,cruiseObj.imageUrl);
                 });
 
             mT = new messageTemplate.messageTemplateModel();
             callback(mT.buildGenericMessage(eM.getElementModel()),sessionId);
         }
         else if(type=='cruiseCodeNotFound') {
-            responseObj.forEach(function(cruiseObj){
+            for (key in responseObj) {
+                var eM = new elementModel.elementModel();
                 bM = new buttonModel.buttonModel();
-                bM.buildPayLoadButton("postback",cruiseObj.destination, "LOCATION_"+ cruiseObj.destination);
-            });
+                bM.buildPayLoadButton("postback",responseObj[key], "LOCATION_"+ responseObj[key]);
+                eM.addElements(bM.getButtonsList(),responseObj[key],"BAHAMAS","");
+            };
             mT = new messageTemplate.messageTemplateModel();
             callback(mT.buildButtonMessage("Select any of the location below",bM.getButtonsList()),sessionId);
         }
-
     };
 
 cms.buildGeneicMessage = function(type,callback,sessionId,responseObj){
