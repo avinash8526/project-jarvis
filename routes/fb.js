@@ -9,6 +9,7 @@ var fbUtils = require('../utils/fbUtils');
 var botBrain = require('../botEngine/botBrain');
 var Wit = require('../botEngine/wit').Wit;
 var debug = require('debug')('project-jarvis:fbJS');
+var ourBrain = require('../utils/botBrain');
 
 var wit = new Wit(config.WIT_TOKEN, botBrain.actions);
 
@@ -77,6 +78,21 @@ router.post('/', function (req, res, next) {
                     // code UTK
                     break;
                 case 'MAIL':
+                    if(payloadContext[1] != undefined){
+                        if(jarvisFilters.destinations[payloadContext[1]] != undefined){
+                            fbUtils.sessions[sessionId].context.location = payloadContext[1];
+                            fbUtils.fbMessage(
+                                sessionId,
+                                'Please provide email address'
+                            )
+                        }
+                        else {
+                            fbUtils.fbMessage(
+                                sessionId,
+                                'There is no cruise from this destination, kindly search for other options, type help'
+                            );
+                        }
+                    }
                     // CODE AVINASH
                     break;
                 case 'LOCATION':
@@ -86,9 +102,6 @@ router.post('/', function (req, res, next) {
                     debug("Not a valid option");
 
             }
-            var destination = payloadContext[1];
-            var sortType = payloadContext[2];
-
 
 
         }
