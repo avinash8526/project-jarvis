@@ -40,6 +40,24 @@ cms.buildGeneicMessage = function(type,callback,sessionId,responseObj){
     }
 };
 
+cms.sendCruiseSearchResult = function(callback, sessionId, responseObj) {
+    var eM = new elementModel.elementModel();
+    responseObj.forEach(function (cruiseDetail) {
+        var bM = new buttonModel.buttonModel();
+        bM.buildUrlButton("Book Now", "Book Now", obj.webUrl);
+        eM.addElements(bM, cruiseDetail.cruiseLineName - obj.price, cruiseDetail.shipname, obj.imageUrl);
+    });
+
+    var additionalButtons = new buttonModel.buttonModel();
+    additionalButtons.buildPayLoadButton("SORT", "SORT", "SORT_" + responseObj.destinationCode);
+    additionalButtons.buildPayLoadButton("MAIL", "MAIL", "MAIL_" + responseObj.destinationCode);
+    eM.addElements(additionalButtons, "", "", "");
+    var messageTemplate = new messageTemplate.messageTemplateModel();
+    var templateBody = messageTemplate.buildGenericMessage(eM.getElementModel());
+    callback(templateBody, sessionId);
+}
+
+
 cms.send = function(message,sessionId){
         var strMessage = JSON.stringify(message);
         var recipientId = fbUtils.sessions[sessionId].fbid;
