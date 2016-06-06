@@ -117,8 +117,9 @@ cruiseApi.makeApiCall = function (context, callback) {
         sailings.forEach(function (sailing) {
             var obj = {};
             
-            obj.title = sailing.cruiseLine.name;
-            obj.subTitle = sailing.ship.name;
+            obj.cruiseLineName = sailing.cruiseLine.name;
+            obj.shipName = sailing.ship.name;
+            obj.price = sailing.leadInPrice;
             obj.imageUrl = sailing.ship.photoUrl;
             obj.webUrl = config.apiCalls.targetUrl + "?destination=" + 
             config.apiCalls.targetUrlParametersMapping.destination[sailing.itinerary.destination.destination] +
