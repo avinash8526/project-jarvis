@@ -10,9 +10,14 @@ var botBrain = {};
 var cruiseApi = require('../utils/cruiseApi');
 
 botBrain.possibleEntityValues = [
-            'cruise',
-            'greet',
-            'location'
+    'cruise',
+    'greet',
+    'location',
+    'help',
+    'mail_me',
+    'greet',
+    'email',
+    'hotel'
     // add more enttities
 ];
 botBrain.firstEntityValue = function(entities, entity){
@@ -43,7 +48,7 @@ botBrain.actions = {
 
                 // Let's give the wheel back to our bot
                 cb();
-        });
+            });
         } else {
             console.log('Oops! Couldn\'t find user for session:', sessionId);
             // Giving the wheel back to our bot
@@ -70,7 +75,7 @@ botBrain.actions = {
     error: function(sessionId, context, error) {
         console.log(error.message);
     },
-    
+
     getCruiseInformation : function(sessionId,context,cb){
         //call cruise api
         // take the response object from cruise api
@@ -84,12 +89,28 @@ botBrain.actions = {
                 cb();
             }
 
-            cb();    
+            cb();
         };
 
         cruiseApi.makeApiCall(context, callback);
-        
-    }
+
+    },
+
+    getHotelInformation : function(sessionId,context,cb){
+        // call hotel api
+        cb();
+    },
+
+    sendMail : function(sessionId,context,cb) {
+
+        cb();
+    },
+
+    cleanContext : function(sessionId,context,cb) {
+
+        cb();
+    },
+
 
 };
 
