@@ -1,6 +1,3 @@
-/**
- * Created by avagrawal on 6/1/16.
- */
 
 var config = require('../config/config');
 var express = require('express');
@@ -45,52 +42,39 @@ router.post('/', function (req, res, next) {
             }
         }
         if(messaging.postback){
-            //sort_destination_[price, asc/desc]
-            //sort_By, sortOrder ={asc/desc}
-            //sort_destination_price
-            //sort_destination_asc/desc
-
+            var recipientId = fbUtils.sessions[sessionId].fbid;
             var payloadContext = String(messaging.postback.payload).split("_");
-            switch(payloadContext[0]) {
-                case 'SORT':
-                    //var destination = payloadContext[1];
-                    //var sortType = payloadContext[2];
-                    var cruiseContext = {};
-                    cruiseContext.location = payloadContext[1];
-                    cruiseContext.sortBy = payloadContext[2];
-                    ourBrain.getCruiseInformation(sessionId, cruiseContext);
-                    break;
-                case 'MAIL':
-                    var recipientId = fbUtils.sessions[sessionId].fbid;
-                    if(payloadContext[1] != undefined){
-                        if(jarvisFilters.destinations[payloadContext[1].toLowerCase()] != undefined){
-                            fbUtils.sessions[sessionId].context.location = payloadContext[1];
-                            fbUtils.sessions[sessionId].context.mail_me = "Mail";
-                            callWit(sessionId,msg);
-                        }
-                        else {
-                            fbUtils.fbMessage(
-                                recipientId,
-                                'There is no cruise from this destination, kindly search for other options, type help'
-                            );
-                        }
-                    }
-                    else {
-                        fbUtils.fbMessage(
-                            recipientId,
-                            'Context information is lost , please start again, we deeply regret for this'
-                        );
-                    }
-                    // CODE AVINASH
-                    break;
-                case 'LOCATION':
-                    //code neha
-                    break;
-                default:
-                    debug("Not a valid option");
 
+            if(payloadContext[1] != undefined && jarvisFilters.destinations[payloadContext[1].toLowerCase()] != undefined) {
+                switch (payloadContext[0]) {
+                    case 'SORT':
+                        //sort_destination_[price, asc/desc]
+                        //sort_By, sortOrder ={asc/desc}
+                        //sort_destination_price
+                        //sort_destination_asc/desc
+                        ourBrain.getCruiseInformation(sessionId, buildCruiseContext(payloadContext));
+                        break;
+
+                    case 'MAIL':
+                        fbUtils.sessions[sessionId].context.location = payloadContext[1];
+                        fbUtils.sessions[sessionId].context.mail_me = "Mail";
+                        callWit(sessionId, msg);
+                        break;
+
+                    case 'LOCATION':
+                        ourBrain.getCruiseInformation(sessionId, buildCruiseContext(payloadContext));
+                        break;
+
+                    default:
+                        debug("Not a valid option");
+                }
             }
-
+            else {
+                fbUtils.fbMessage(
+                    recipientId,
+                    'There is no cruise from this destination, kindly search for other options, type help'
+                );
+            }
 
         }
     }
