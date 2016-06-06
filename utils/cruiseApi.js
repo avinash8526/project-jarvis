@@ -3,7 +3,6 @@ var cruiseApi = {};
 var debug = require('debug')('project-jarvis:server');
 var http = require('http');
 var request = require('request');
-var fs = require('fs');
 var config = require('../config/config')
 
 
