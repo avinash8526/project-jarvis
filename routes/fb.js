@@ -26,40 +26,56 @@ router.get('/', function (req, res, next) {
 
 router.post('/', function (req, res, next) {
     var messaging = fbUtils.getFirstMessagingEntry(req.body);
-    if (messaging && messaging.message && messaging.recipient.id === config.FB_PAGE_ID) {
+    if (messaging && messaging.recipient.id === config.FB_PAGE_ID) {
         var sender = messaging.sender.id;
         var sessionId = fbUtils.findOrCreateSession(sender);
-        var msg = messaging.message.text;
-        var atts = messaging.message.attachments;
-        if (atts) {
-            fbUtils.fbMessage(
-                sender,
-                'Sorry I can only process text messages for now.'
-            );
-        }
-        else if (msg) {
-            wit.runActions(
-                sessionId, // the user's current session
-                msg, // the user's message
-                fbUtils.sessions[sessionId].context, // the user's current session state
-                function (error, context) {
-                    if (error) {
-                        console.log('Oops! Got an error from Wit:', error);
-                    } else {
-                        console.log('Waiting for futher messages.');
 
-                        // Based on the session state, you might want to reset the session.
-                        // This depends heavily on the business logic of your bot.
-                        // Example:
-                        // if (context['done']) {
-                        //   delete sessions[sessionId];
-                        // }
+        if(messaging.message){
+            var msg = messaging.message.text;
+            var atts = messaging.message.attachments;
+            if (atts) {
+                fbUtils.fbMessage(
+                    sender,
+                    'Sorry I can only process text messages for now.'
+                );
+            }
+            else if (msg) {
+                wit.runActions(
+                    sessionId, // the user's current session
+                    msg, // the user's message
+                    fbUtils.sessions[sessionId].context, // the user's current session state
+                    function (error, context) {
+                        if (error) {
+                            console.log('Oops! Got an error from Wit:', error);
+                        } else {
+                            console.log('Waiting for futher messages.');
 
-                        // Updating the user's current session state
-                        fbUtils.sessions[sessionId].context = context;
+                            // Based on the session state, you might want to reset the session.
+                            // This depends heavily on the business logic of your bot.
+                            // Example:
+                            // if (context['done']) {
+                            //   delete sessions[sessionId];
+                            // }
+
+                            // Updating the user's current session state
+                            fbUtils.sessions[sessionId].context = context;
+                        }
                     }
-                }
-            );
+                );
+            }
+        }
+        if(messaging.payload){
+            //sort_destination_[price, asc/desc]
+            //sort_By, sortOrder ={asc/desc}
+            //sort_destination_price
+            //sort_destination_asc/desc
+
+            var payloadContext = String(messaging.payload).split("_");
+            var destination = payloadContext[1];
+            var sortType = payloadContext[2];
+
+
+
         }
     }
     res.sendStatus(200);
