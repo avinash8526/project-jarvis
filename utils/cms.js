@@ -19,7 +19,12 @@ cms.buildButtonMessage = function(type,callback,sessionId,responseObj) {
             eM = new elementModel.elementModel();
             responseObj.processedData.forEach(function(cruiseObj){
                 bM = new buttonModel.buttonModel();
+                var cruiseURL = encodeURI(cruiseObj.webUrl);
                 bM.buildUrlButton("web_url", cruiseObj.webUrl,"Book Now");
+                if(cruiseURL){
+                    var finalUrl = "https://www.facebook.com/sharer/sharer.php?app_id=113869198637480&sdk=joey&u="+cruiseURL+"&display=popup&ref=plugin&src=share_button";
+                    bM.buildUrlButton("web_url",finalUrl,"Share This Itinerary");
+                }
                 bM.buildPayLoadButton("postback","Ask Jarvis More","JARVIS_More");
                 // to add more buttona
                 eM.addElements(bM,cruiseObj.cruiseLineName + " @ $" + cruiseObj.price + " per night", cruiseObj.shipName, cruiseObj.imageUrl);
