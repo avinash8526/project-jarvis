@@ -59,6 +59,7 @@ router.post('/', function (req, res, next) {
                         fbUtils.sessions[sessionId].context.location = payloadContext[1];
                         fbUtils.sessions[sessionId].context.mail_me = "Mail";
                         callWit(sessionId, msg);
+                        cb(context);
                         break;
 
                     case 'LOCATION':
