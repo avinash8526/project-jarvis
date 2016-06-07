@@ -7,7 +7,6 @@ var botBrain = {};
 var cruiseApi = require('../utils/cruiseApi');
 var fbPostApi = require('../utils/fbPostApi');
 var mailer = require('../utils/mailer');
-var config = require('../config/config');
 
 botBrain.possibleEntityValues = [
     'cruise',
