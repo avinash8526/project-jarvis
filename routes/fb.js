@@ -52,6 +52,7 @@ router.post('/', function (req, res, next) {
                         //sort_By, sortOrder ={asc/desc}
                         //sort_destination_price
                         //sort_destination_asc/desc
+                        payloadContext[1] = jarvisFilters.destinations[payloadContext[1].toLowerCase()];
                         ourBrain.getCruiseInformation(sessionId, payloadContext);
                         break;
 
