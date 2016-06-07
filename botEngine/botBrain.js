@@ -76,6 +76,7 @@ botBrain.actions = {
 
         var destCode = cruiseApi.getCode(context.location.toLowerCase(), "destination");
         if (destCode) {
+            //context.destinations = destCode;
             cruiseApi.makeApiCall(context, buildLocationFoundMessage);
         }
         else {

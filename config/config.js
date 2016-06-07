@@ -28,10 +28,10 @@ config.smtp = {
 
 config.apiCalls = {
     filterUrl : "http://cruise-api-service.us-west-2.int.expedia.com/search/sailings/filters",
-    apiUrl : "http://cruise-api-service.us-west-2.int.expedia.com/search/sailings",
+    apiUrl : "http://terminal2.expedia.com/x/cruise/search/sailings",
     filtersJsonFile : "jarvisFilters.json",
     apiParameters : [
-        "destinations", "sortBy", "sortOrder", "limit", "offset", "minPrice", "maxPrice"
+        "destinations", "sortBy", "sortOrder", "limit", "offset", "minPrice", "maxPrice","apikey"
     ],
     targetUrl : "https://www.expedia.com/Cruise-Search",
     targetUrlParametersMapping : {

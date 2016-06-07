@@ -62,6 +62,7 @@ router.post('/', function (req, res, next) {
                         break;
 
                     case 'LOCATION':
+                        payloadContext[1] = jarvisFilters.destinations[payloadContext[1].toLowerCase()];
                         ourBrain.getCruiseInformation(sessionId, payloadContext);
                         break;
 
