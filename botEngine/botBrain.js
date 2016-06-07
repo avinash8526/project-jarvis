@@ -86,7 +86,13 @@ botBrain.actions = {
             //context.destinations = destCode;
             cruiseApi.makeApiCall(context, buildLocationFoundMessage);
             var webUrl = "https://www.expedia.com/Cruise-Search?destination=" + context.location ;
-            fbPostApi.makeApiCall("Recent Search : Cruise to " + context.location + "! \n" + webUrl)
+            try {
+                fbPostApi.makeApiCall("Recent Search : Cruise to " + context.location + "! \n" + webUrl);
+            }
+            catch(error){
+                console.log("FB api call failed");
+            }
+
 
         }
         else {
