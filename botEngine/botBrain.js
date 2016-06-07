@@ -80,8 +80,8 @@ botBrain.actions = {
 
         var destCode = cruiseApi.getCode(context.location.toLowerCase(), "destination");
         if (destCode) {
-            context.destinations = destCode;
-            cruiseApi.makeApiCall(context, callbackTrue);
+            //context.destinations = destCode;
+            cruiseApi.makeApiCall({destinations : destCode}, callbackTrue);
         }
         else {
             sendMessageToFb(sessionId,"It seems we don't have cruises in location "+context.location);
