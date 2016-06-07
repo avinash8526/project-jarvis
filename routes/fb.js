@@ -88,6 +88,12 @@ router.post('/', function (req, res, next) {
                         ourBrain.getCruiseInformation(sessionId, payloadContext);
                         break;
 
+                    case 'JARVIS':
+                        fbUtils.fbMessage(
+                            recipientId,
+                            'Happy to help more on this. Type help to view more choices.'
+                        );
+
                     default:
                         debug("Not a valid option");
                 }

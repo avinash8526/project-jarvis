@@ -20,8 +20,9 @@ cms.buildButtonMessage = function(type,callback,sessionId,responseObj) {
             responseObj.processedData.forEach(function(cruiseObj){
                 bM = new buttonModel.buttonModel();
                 bM.buildUrlButton("web_url", cruiseObj.webUrl,"Book Now");
+                bM.buildPayLoadButton("postback","Ask Jarvis More","JARVIS_More");
                 // to add more buttona
-                eM.addElements(bM,cruiseObj.cruiseLineName + " @ $" + cruiseObj.price, cruiseObj.shipName, cruiseObj.imageUrl);
+                eM.addElements(bM,cruiseObj.cruiseLineName + " @ $" + cruiseObj.price + " per night", cruiseObj.shipName, cruiseObj.imageUrl);
             });
             if(responseObj.destination != "") {
                 var expediaImgUrl = "https://www.expedia.com/_dms/header/logo.svg?locale=en_US&siteid=1";
