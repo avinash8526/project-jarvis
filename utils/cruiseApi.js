@@ -174,12 +174,12 @@ var prepareUrl = function (context) {
 };
 
 var processData = function (data) {
+    var result = {};
     var processedData = [];
     var sailings = data.sailings;
 
     if(sailings && sailings.length > 5)
         sailings = sailings.slice(0, 5);
-
     sailings.forEach(function (sailing) {
         var obj = {};
 
@@ -195,12 +195,20 @@ var processData = function (data) {
         processedData.push(obj);
     });
 
-    return processedData;
+    result.processedData = processedData;
+    return result;
 };
 
 var buildCruiseContext = function (context) {
     var cruiseContext = {};
-    cruiseContext[config.apiCalls.apiParameters[0]] = context[1];
+    if(context[1] != undefined){
+        cruiseContext[config.apiCalls.apiParameters[0]] = context[1];
+    }
+    else{
+        if(context.location != undefined){
+            cruiseContext[config.apiCalls.apiParameters[0]] = jarvisFilters.destinations[context.location.toLowerCase()];
+        }
+    }
     //cruiseContext.sortBy
     if(context[2] != undefined) {
         cruiseContext[config.apiCalls.apiParameters[1]] = context[2];
@@ -218,7 +226,9 @@ cruiseApi.makeApiCall = function (context, buildMessage) {
 
     request(url, function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            buildMessage.call(null, processData(JSON.parse(body)));
+            var result = processData(JSON.parse(body));
+            result.destination = context.location ? context.location : "";
+            buildMessage.call(null, result );
         } else {
             debug("Some error has occurred in making call to " + url + "  -- " + error)
         }
