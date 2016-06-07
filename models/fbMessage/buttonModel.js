@@ -1,7 +1,3 @@
-/**
- * Created by avagrawal on 6/4/16.
- */
-
 
 var buttonModelObject = {};
 

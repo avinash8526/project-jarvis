@@ -154,13 +154,25 @@ var processData = function (data) {
     return processedData;
 };
 
-cruiseApi.makeApiCall = function (context, callback) {
+var buildCruiseContext = function (context) {
+    var cruiseContext = {};
+    cruiseContext[config.apiCalls.apiParameters[0]] = context[1];
+    //cruiseContext.sortBy
+    if(context[2] != undefined) {
+        cruiseContext[config.apiCalls.apiParameters[1]] = context[2];
+    }
+    cruiseContext[config.apiCalls.apiParameters[2]] = "asc";
+    cruiseContext[config.apiCalls.apiParameters[3]] = 5;
+    cruiseContext[config.apiCalls.apiParameters[4]] = 0;
+    return cruiseContext;
+};
 
-    var url = prepareUrl(context);
+cruiseApi.makeApiCall = function (context, buildMessage) {
+    var url = prepareUrl(buildCruiseContext(context));
 
     request(url, function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            callback.call(null, processData(JSON.parse(body)));
+            buildMessage.call(null, processData(JSON.parse(body)));
         } else {
             debug("Some error has occurred in making call to " + url + "  -- " + error)
         }

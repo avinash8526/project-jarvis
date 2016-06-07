@@ -1,7 +1,3 @@
-/**
- * Created by avagrawal on 6/4/16.
- */
-
 
 var cms = {};
 var buttonModel = require('../models/fbMessage/buttonModel');
@@ -11,6 +7,7 @@ var fbUtils = require('./fbUtils');
 
 cms.buildButtonMessage = function(type,callback,sessionId,responseObj) {
         var bM;
+        var eM;
         if(type == 'mock'){
             bM = new buttonModel.buttonModel();
             bM.buildUrlButton("web_url","http://google.com","Google");
@@ -19,7 +16,7 @@ cms.buildButtonMessage = function(type,callback,sessionId,responseObj) {
             callback(mT.buildButtonMessage("Search Cruise here",bM.getButtonsList()),sessionId);
         }
         else if(type=='locationFound') {
-            var eM = new elementModel.elementModel();
+            eM = new elementModel.elementModel();
             bM = new buttonModel.buttonModel();
             responseObj.forEach(function(cruiseObj){
                 bM.buildUrlButton("web_url", cruiseObj.webUrl,"Book Now");
@@ -31,17 +28,17 @@ cms.buildButtonMessage = function(type,callback,sessionId,responseObj) {
             callback(mT.buildGenericMessage(eM.getElementModel()),sessionId);
         }
         else if(type=='cruiseCodeNotFound') {
-            var eM = new elementModel.elementModel();
+            eM = new elementModel.elementModel();
             bM = new buttonModel.buttonModel();
             for (key in responseObj) {
                 bM.buildPayLoadButton("postback",key, "LOCATION_"+ responseObj[key]);
-            };
+            }
             mT = new messageTemplate.messageTemplateModel();
             callback(mT.buildButtonMessage("Select any of the location below",bM.getButtonsList()),sessionId);
         }
     };
 
-cms.buildGeneicMessage = function(type,callback,sessionId,responseObj){
+cms.buildGenericMessage = function(type, callback, sessionId, responseObj){
     if(type == 'mock'){
         var bM = new buttonModel.buttonModel();
         bM.buildUrlButton("web_url","http://google.com","Google");
