@@ -1,6 +1,7 @@
 var mailer = {};
+var fbUtils = require('./fbUtils');
 
-mailer.mailDetails = function(destinationCode, to, cb) {
+mailer.mailDetails = function(destinationCode, to, cb,sessionId) {
 
 	var cruiseApi = require('../utils/cruiseApi')
 
@@ -16,7 +17,7 @@ mailer.mailDetails = function(destinationCode, to, cb) {
 		var destinationName = cruiseApi.getNameFromCode(destinationCode, 'destination');
 		var title = "Cruises to " + destinationName;
 		data.title = title;
-		data.sailings = data;
+		data.sailings = data.processedData;
 
 		var html = ejs.render(str, {data : data});
 		
@@ -34,6 +35,7 @@ mailer.mailDetails = function(destinationCode, to, cb) {
 		   
 		});
 
+		var fakeContext = {};
 		var sendMail = function(to, subject, text) {
 			smtpTransport.sendMail({
 			    to: to, 
@@ -42,14 +44,20 @@ mailer.mailDetails = function(destinationCode, to, cb) {
 			    html: text 
 				}, function(error, response){
 			    if(error){
-			       console.log(error)
+			       console.log(error);
+					sendMessageToFbFromMailer("Mailing server error",sessionId);
+					cb(fakeContext);
 			       return false;
 			    } else{
-			    	console.log('sent')
+
+			    	console.log('sent');
+					sendMessageToFbFromMailer("Please check your email",sessionId);
+					cb(fakeContext);
 			       return true;
 			    }
 			});
-			cb();
+
+
 		};
 
 
@@ -59,5 +67,26 @@ mailer.mailDetails = function(destinationCode, to, cb) {
 	cruiseApi.makeApiCall(parameters, callback);
 
 };
+
+
+function sendMessageToFbFromMailer(message,sessionId) {
+	var recipientId = fbUtils.sessions[sessionId].fbid;
+	if (recipientId) {
+		fbUtils.fbMessage(recipientId, message, function (err, data) {
+			if (err) {
+				console.log(
+					'Oops! An error occurred while forwarding the response to',
+					recipientId,
+					':',
+					err
+				);
+			}
+		});
+	}
+	else {
+		console.log('Oops! Couldn\'t find user for session:', sessionId);
+		// Giving the wheel back to our bot
+	}
+}
 
 module.exports = mailer;

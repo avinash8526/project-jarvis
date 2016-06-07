@@ -26,9 +26,15 @@ router.post('/', function (req, res, next) {
     var messaging = fbUtils.getFirstMessagingEntry(req.body);
     if (messaging && messaging.recipient.id === config.FB_PAGE_ID) {
         var sender = messaging.sender.id;
+        config.sender = sender;
         var sessionId = fbUtils.findOrCreateSession(sender);
 
         if(messaging.message){
+            var recipientId = fbUtils.sessions[sessionId].fbid;
+            fbUtils.fbMessage(
+                recipientId,
+                'Processing...'
+            );
             var msg = messaging.message.text;
             var atts = messaging.message.attachments;
             if (atts) {
@@ -44,6 +50,10 @@ router.post('/', function (req, res, next) {
         if(messaging.postback){
             var recipientId = fbUtils.sessions[sessionId].fbid;
             var payloadContext = String(messaging.postback.payload).split("_");
+            fbUtils.fbMessage(
+                recipientId,
+                'Processing...'
+            );
 
             if(payloadContext[1] != undefined && jarvisFilters.destinations[payloadContext[1].toLowerCase()] != undefined) {
                 switch (payloadContext[0]) {
@@ -52,19 +62,29 @@ router.post('/', function (req, res, next) {
                         //sort_By, sortOrder ={asc/desc}
                         //sort_destination_price
                         //sort_destination_asc/desc
-                        payloadContext[1] = jarvisFilters.destinations[payloadContext[1].toLowerCase()];
+                        //payloadContext[1] = jarvisFilters.destinations[payloadContext[1].toLowerCase()];
                         ourBrain.getCruiseInformation(sessionId, payloadContext);
                         break;
 
                     case 'MAIL':
                         fbUtils.sessions[sessionId].context.location = payloadContext[1];
                         fbUtils.sessions[sessionId].context.mail_me = "Mail";
-                        callWit(sessionId, msg);
-                        cb(context);
+                        try {
+                            callWit(sessionId, msg);
+                        }
+                        catch(error) {
+                            console.log("Mailing server is down");
+                            fbUtils.fbMessage(
+                                recipientId,
+                                'Mailing server is down'
+                            );
+                        }
+
+
                         break;
 
                     case 'LOCATION':
-                        payloadContext[1] = jarvisFilters.destinations[payloadContext[1].toLowerCase()];
+                        //payloadContext[1] = jarvisFilters.destinations[payloadContext[1].toLowerCase()];
                         ourBrain.getCruiseInformation(sessionId, payloadContext);
                         break;
 

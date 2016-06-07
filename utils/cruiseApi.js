@@ -202,7 +202,7 @@ var processData = function (data) {
 var buildCruiseContext = function (context) {
     var cruiseContext = {};
     if(context[1] != undefined){
-        cruiseContext[config.apiCalls.apiParameters[0]] = context[1];
+        cruiseContext[config.apiCalls.apiParameters[0]] = jarvisFilters.destinations[context[1].toLowerCase()];
     }
     else{
         if(context.location != undefined){
@@ -227,7 +227,7 @@ cruiseApi.makeApiCall = function (context, buildMessage) {
     request(url, function (error, response, body) {
         if (!error && response.statusCode == 200) {
             var result = processData(JSON.parse(body));
-            result.destination = context.location ? context.location : "";
+            result.destination = context.location ? context.location : context[1];
             buildMessage.call(null, result );
         } else {
             debug("Some error has occurred in making call to " + url + "  -- " + error)

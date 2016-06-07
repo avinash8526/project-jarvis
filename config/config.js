@@ -17,13 +17,14 @@ config.FB_VERIFY_TOKEN = process.env.FB_VERIFY_TOKEN;
 
 config.entities = {};
 
+
 config.smtp = {
         host : 'Shost.sea.corp.expecn.com',
         auth : {
-            user : '',
-            pass : ""
+            user : process.env.userID,
+            pass : process.env.password
         },
-        from : 'a-akshitiz@expedia.com'
+        from : process.env.fromAddress
 };
 
 config.apiCalls = {
