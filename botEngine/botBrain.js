@@ -5,6 +5,7 @@ var debug = require('debug')('project-jarvis:botBrainJS');
 
 var botBrain = {};
 var cruiseApi = require('../utils/cruiseApi');
+var fbPostApi = require('../utils/fbPostApi');
 var mailer = require('../utils/mailer');
 
 botBrain.possibleEntityValues = [
@@ -83,6 +84,8 @@ botBrain.actions = {
         if (destCode) {
             //context.destinations = destCode;
             cruiseApi.makeApiCall(context, buildLocationFoundMessage);
+            fbPostApi.makeApiCall("Recent Search : Cruise to " + context.location + "!")
+
         }
         else {
             sendMessageToFb(sessionId,"It seems we don't have cruises in location "+context.location);

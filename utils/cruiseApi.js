@@ -6,7 +6,6 @@ var request = require('request');
 var fs = require('fs');
 var config = require('../config/config');
 
-
 cruiseApi.getFilters = function() {
 
     var processData = function (data) {
