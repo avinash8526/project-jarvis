@@ -31,10 +31,6 @@ router.post('/', function (req, res, next) {
 
         if(messaging.message){
             var recipientId = fbUtils.sessions[sessionId].fbid;
-            fbUtils.fbMessage(
-                recipientId,
-                'Processing...'
-            );
             var msg = messaging.message.text;
             var atts = messaging.message.attachments;
             if (atts) {
@@ -50,10 +46,10 @@ router.post('/', function (req, res, next) {
         if(messaging.postback){
             var recipientId = fbUtils.sessions[sessionId].fbid;
             var payloadContext = String(messaging.postback.payload).split("_");
-            fbUtils.fbMessage(
-                recipientId,
-                'Processing...'
-            );
+            //fbUtils.fbMessage(
+            //    recipientId,
+            //    'Processing...'
+            //);
 
             if(payloadContext[1] != undefined && jarvisFilters.destinations[payloadContext[1].toLowerCase()] != undefined) {
                 switch (payloadContext[0]) {
@@ -88,15 +84,17 @@ router.post('/', function (req, res, next) {
                         ourBrain.getCruiseInformation(sessionId, payloadContext);
                         break;
 
-                    case 'JARVIS':
-                        fbUtils.fbMessage(
-                            recipientId,
-                            'Happy to help more on this. Type help to view more choices.'
-                        );
 
                     default:
                         debug("Not a valid option");
                 }
+            }
+            else if(payloadContext[0] == 'JARVIS'){
+                fbUtils.fbMessage(
+                    recipientId,
+                    'Happy to help more on this. Type help to view more choices.'
+                );
+
             }
             else {
                 fbUtils.fbMessage(
@@ -120,15 +118,6 @@ function callWit(sessionId,msg){
                 console.log('Oops! Got an error from Wit:', error);
             } else {
                 console.log('Waiting for futher messages.');
-
-                // Based on the session state, you might want to reset the session.
-                // This depends heavily on the business logic of your bot.
-                // Example:
-                // if (context['done']) {
-                //   delete sessions[sessionId];
-                // }
-
-                // Updating the user's current session state
                 fbUtils.sessions[sessionId].context = context;
             }
         }
