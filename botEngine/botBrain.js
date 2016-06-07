@@ -100,10 +100,10 @@ botBrain.actions = {
         var destinatCode  = jarvisFilters.destinations[context.location.toLowerCase()];
         var email  = context.email;
         if(destinatCode && email){
-            mailer.mailDetails(destinatCode, email, cb);
+            mailer.mailDetails(destinatCode, email, cb,sessionId);
         }
         else {
-            sendMessageToFb(sessionId,"Something went wrong");
+            sendMessageToFb(sessionId,"Something went wrong, please try again the previous option");
             cb();
         }
         

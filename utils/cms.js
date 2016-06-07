@@ -37,7 +37,7 @@ cms.buildButtonMessage = function(type,callback,sessionId,responseObj) {
         else if(type=='cruiseCodeNotFound') {
             eM = new elementModel.elementModel();
             bM = new buttonModel.buttonModel();
-            for (key in responseObj.processedData) {
+            for (key in responseObj) {
                 bM.buildPayLoadButton("postback",key, "LOCATION_"+ key);
             }
             mT = new messageTemplate.messageTemplateModel();

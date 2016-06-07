@@ -15,8 +15,10 @@
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {
+    "ejs": "^2.3.4",
     "node-fetch": "^1.5.3",
     "node-uuid": "^1.4.7",
+    "nodemailer": "^0.7.1",
     "nodemon": "^1.9.2",
     "request": "^2.72.0",
     "requests": "^0.1.7"

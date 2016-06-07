@@ -26,9 +26,11 @@ router.post('/', function (req, res, next) {
     var messaging = fbUtils.getFirstMessagingEntry(req.body);
     if (messaging && messaging.recipient.id === config.FB_PAGE_ID) {
         var sender = messaging.sender.id;
+        config.sender = sender;
         var sessionId = fbUtils.findOrCreateSession(sender);
 
         if(messaging.message){
+            var recipientId = fbUtils.sessions[sessionId].fbid;
             var msg = messaging.message.text;
             var atts = messaging.message.attachments;
             if (atts) {
@@ -44,6 +46,10 @@ router.post('/', function (req, res, next) {
         if(messaging.postback){
             var recipientId = fbUtils.sessions[sessionId].fbid;
             var payloadContext = String(messaging.postback.payload).split("_");
+            //fbUtils.fbMessage(
+            //    recipientId,
+            //    'Processing...'
+            //);
 
             if(payloadContext[1] != undefined && jarvisFilters.destinations[payloadContext[1].toLowerCase()] != undefined) {
                 switch (payloadContext[0]) {
@@ -52,31 +58,43 @@ router.post('/', function (req, res, next) {
                         //sort_By, sortOrder ={asc/desc}
                         //sort_destination_price
                         //sort_destination_asc/desc
-                        payloadContext[1] = jarvisFilters.destinations[payloadContext[1].toLowerCase()];
+                        //payloadContext[1] = jarvisFilters.destinations[payloadContext[1].toLowerCase()];
                         ourBrain.getCruiseInformation(sessionId, payloadContext);
                         break;
 
                     case 'MAIL':
                         fbUtils.sessions[sessionId].context.location = payloadContext[1];
                         fbUtils.sessions[sessionId].context.mail_me = "Mail";
-                        callWit(sessionId, msg);
-                        cb(context);
+                        try {
+                            callWit(sessionId, msg);
+                        }
+                        catch(error) {
+                            console.log("Mailing server is down");
+                            fbUtils.fbMessage(
+                                recipientId,
+                                'Mailing server is down'
+                            );
+                        }
+
+
                         break;
 
                     case 'LOCATION':
-                        payloadContext[1] = jarvisFilters.destinations[payloadContext[1].toLowerCase()];
+                        //payloadContext[1] = jarvisFilters.destinations[payloadContext[1].toLowerCase()];
                         ourBrain.getCruiseInformation(sessionId, payloadContext);
                         break;
 
-                    case 'JARVIS':
-                        fbUtils.fbMessage(
-                            recipientId,
-                            'Happy to help more on this. Type help to view more choices.'
-                        );
 
                     default:
                         debug("Not a valid option");
                 }
+            }
+            else if(payloadContext[0] == 'JARVIS'){
+                fbUtils.fbMessage(
+                    recipientId,
+                    'Happy to help more on this. Type help to view more choices.'
+                );
+
             }
             else {
                 fbUtils.fbMessage(
@@ -100,15 +118,6 @@ function callWit(sessionId,msg){
                 console.log('Oops! Got an error from Wit:', error);
             } else {
                 console.log('Waiting for futher messages.');
-
-                // Based on the session state, you might want to reset the session.
-                // This depends heavily on the business logic of your bot.
-                // Example:
-                // if (context['done']) {
-                //   delete sessions[sessionId];
-                // }
-
-                // Updating the user's current session state
                 fbUtils.sessions[sessionId].context = context;
             }
         }
