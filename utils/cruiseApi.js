@@ -157,14 +157,13 @@ var processData = function (data) {
 
 var buildCruiseContext = function (context) {
     var cruiseContext = {};
-    if(context[1] == undefined){
+    if(context[1] != undefined){
+        cruiseContext[config.apiCalls.apiParameters[0]] = context[1];
+    }
+    else{
         if(context.location != undefined){
             cruiseContext[config.apiCalls.apiParameters[0]] = jarvisFilters.destinations[context.location.toLowerCase()];
         }
-
-    }
-    else{
-        cruiseContext[config.apiCalls.apiParameters[0]] = context[1];
     }
     //cruiseContext.sortBy
     if(context[2] != undefined) {

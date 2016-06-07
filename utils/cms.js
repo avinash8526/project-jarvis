@@ -16,7 +16,6 @@ cms.buildButtonMessage = function(type,callback,sessionId,responseObj) {
             callback(mT.buildButtonMessage("Search Cruise here",bM.getButtonsList()),sessionId);
         }
         else if(type=='locationFound') {
-            var expediaImgUrl = "https://www.expedia.com/_dms/header/logo.svg?locale=en_US&siteid=1";
             eM = new elementModel.elementModel();
             responseObj.processedData.forEach(function(cruiseObj){
                 bM = new buttonModel.buttonModel();
@@ -24,11 +23,13 @@ cms.buildButtonMessage = function(type,callback,sessionId,responseObj) {
                 // to add more buttona
                 eM.addElements(bM,cruiseObj.cruiseLineName + " @ $" + cruiseObj.price, cruiseObj.shipName, cruiseObj.imageUrl);
             });
-            var additionalButtons = new buttonModel.buttonModel();
-            additionalButtons.buildPayLoadButton("postback", "Sort", "SORT_" + responseObj.destination);
-            additionalButtons.buildPayLoadButton("postback", "Mail", "MAIL_" + responseObj.destination);
-            eM.addElements(additionalButtons,"Your Choices", "Choose what you want to do next", expediaImgUrl);
-
+            if(responseObj.destination != "") {
+                var expediaImgUrl = "https://www.expedia.com/_dms/header/logo.svg?locale=en_US&siteid=1";
+                var additionalButtons = new buttonModel.buttonModel();
+                additionalButtons.buildPayLoadButton("postback", "Sort", "SORT_" + responseObj.destination);
+                additionalButtons.buildPayLoadButton("postback", "Mail", "MAIL_" + responseObj.destination);
+                eM.addElements(additionalButtons, "Your Choices", "Choose what you want to do next", expediaImgUrl);
+            }
             mT = new messageTemplate.messageTemplateModel();
             callback(mT.buildGenericMessage(eM.getElementModel()),sessionId);
         }
