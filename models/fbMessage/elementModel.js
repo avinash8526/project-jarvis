@@ -1,6 +1,3 @@
-/**
- * Created by avagrawal on 6/3/16.
- */
 
 var elementModelObject = {};
 

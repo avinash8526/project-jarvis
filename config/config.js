@@ -1,6 +1,3 @@
-/**
- * Created by avagrawal on 6/1/16.
- */
 
 var config = {};
 
@@ -27,14 +24,14 @@ config.smtp = {
             pass : ""
         },
         from : 'a-akshitiz@expedia.com'
-}
+};
 
 config.apiCalls = {
     filterUrl : "http://cruise-api-service.us-west-2.int.expedia.com/search/sailings/filters",
-    apiUrl : "http://cruise-api-service.us-west-2.int.expedia.com/search/sailings",
+    apiUrl : "http://terminal2.expedia.com/x/cruise/search/sailings",
     filtersJsonFile : "jarvisFilters.json",
     apiParameters : [
-        "minPrice", "maxPrice", "sortBy", "sortOrder", "destinations"
+        "destinations", "sortBy", "sortOrder", "limit", "offset", "minPrice", "maxPrice","apikey"
     ],
     targetUrl : "https://www.expedia.com/Cruise-Search",
     targetUrlParametersMapping : {
@@ -45,7 +42,7 @@ config.apiCalls = {
                 'Caribbean' : 'caribbean'
         }
     }
-}
+};
 
 
 

@@ -1,6 +1,3 @@
-/**
- * Created by avagrawal on 6/1/16.
- */
 
 var fbUtils = {};
 var config = require('../config/config');

@@ -1,6 +1,3 @@
-/**
- * Created by avagrawal on 6/2/16.
- */
 
 var fbUtils = require('../utils/fbUtils');
 var cms =  require('../utils/cms');
@@ -15,10 +12,9 @@ botBrain.possibleEntityValues = [
     'location',
     'help',
     'mail_me',
-    'greet',
     'email',
     'hotel'
-    // add more enttities
+    // add more entities
 ];
 botBrain.firstEntityValue = function(entities, entity){
     const val = entities && entities[entity] &&
@@ -59,17 +55,17 @@ botBrain.actions = {
     },
 
     getCruiseInformation : function(sessionId,context,cb){
-        var callback = function(responseObj) {
+        var buildLocationNotFoundMessage = function(responseObj) {
             try {
-                    cms.buildButtonMessage('cruiseCodeNotFound', cms.send, sessionId, responseObj);
-                }
+                cms.buildButtonMessage('cruiseCodeNotFound', cms.send, sessionId, responseObj);
+            }
             catch (error) {
                 debug(error);
             }
 
         };
 
-        var callbackTrue = function(responseObj) {
+        var buildLocationFoundMessage = function(responseObj) {
             try {
                 cms.buildButtonMessage('locationFound', cms.send, sessionId, responseObj);
             }
@@ -81,18 +77,15 @@ botBrain.actions = {
         var destCode = cruiseApi.getCode(context.location.toLowerCase(), "destination");
         if (destCode) {
             //context.destinations = destCode;
-            cruiseApi.makeApiCall({destinations : destCode}, callbackTrue);
+            cruiseApi.makeApiCall(context, buildLocationFoundMessage);
         }
         else {
             sendMessageToFb(sessionId,"It seems we don't have cruises in location "+context.location);
-           cruiseApi.getRandomCode("destination", callback);
+            cruiseApi.getRandomCode("destination", buildLocationNotFoundMessage);
 
         }
 
         cb();
-       // };
-
-        //cruiseApi.makeApiCall(context, callback);
     },
 
     getHotelInformation : function(sessionId,context,cb){
@@ -108,7 +101,7 @@ botBrain.actions = {
     cleanContext : function(sessionId,context,cb) {
 
         cb();
-    },
+    }
 
 
 };
@@ -125,9 +118,6 @@ function sendMessageToFb(sessionId,message) {
                     err
                 );
             }
-
-            // Let's give the wheel back to our bot
-
         });
     }
     else {

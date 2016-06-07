@@ -1,6 +1,3 @@
-/**
- * Created by avagrawal on 6/1/16.
- */
 
 var config = require('../config/config');
 var express = require('express');
@@ -8,9 +5,8 @@ var router = express.Router();
 var fbUtils = require('../utils/fbUtils');
 var botBrain = require('../botEngine/botBrain');
 var Wit = require('../botEngine/wit').Wit;
-var debug = require('debug')('project-jarvis:fbJS');
 var ourBrain = require('../utils/ourBrain');
-
+var debug = require('debug')('project-jarvis:fbJS');
 var wit = new Wit(config.WIT_TOKEN, botBrain.actions);
 
 router.get('/', function (req, res, next) {
@@ -46,44 +42,39 @@ router.post('/', function (req, res, next) {
             }
         }
         if(messaging.postback){
-            //sort_destination_[price, asc/desc]
-            //sort_By, sortOrder ={asc/desc}
-            //sort_destination_price
-            //sort_destination_asc/desc
-
+            var recipientId = fbUtils.sessions[sessionId].fbid;
             var payloadContext = String(messaging.postback.payload).split("_");
-            switch(payloadContext[0]) {
-                case 'SORT':
-                    // code UTK
-                    break;
-                case 'MAIL':
-                    var recipientId = fbUtils.sessions[sessionId].fbid;
-                    if(payloadContext[1] != undefined){
-                        if(jarvisFilters.destinations[payloadContext[1].toLowerCase()] != undefined){
-                            fbUtils.sessions[sessionId].context.location = payloadContext[1];
-                            fbUtils.sessions[sessionId].context.mail_me = "Mail";
-                            callWit(sessionId,msg);
-                        }
-                        else {
-                            fbUtils.fbMessage(
-                                recipientId,
-                                'There is no cruise from this destination, kindly search for other options, type help'
-                            );
-                        }
-                    }
-                    else {
-                        fbUtils.fbMessage(
-                            recipientId,
-                            'Context information is lost , please start again, we deeply regret for this'
-                        );
-                    }
-                    break;
-                case 'LOCATION':
-                    //code neha
-                    break;
-                default:
-                    debug("Not a valid option");
 
+            if(payloadContext[1] != undefined && jarvisFilters.destinations[payloadContext[1].toLowerCase()] != undefined) {
+                switch (payloadContext[0]) {
+                    case 'SORT':
+                        //sort_destination_[price, asc/desc]
+                        //sort_By, sortOrder ={asc/desc}
+                        //sort_destination_price
+                        //sort_destination_asc/desc
+                        ourBrain.getCruiseInformation(sessionId, payloadContext);
+                        break;
+
+                    case 'MAIL':
+                        fbUtils.sessions[sessionId].context.location = payloadContext[1];
+                        fbUtils.sessions[sessionId].context.mail_me = "Mail";
+                        callWit(sessionId, msg);
+                        break;
+
+                    case 'LOCATION':
+                        payloadContext[1] = jarvisFilters.destinations[payloadContext[1].toLowerCase()];
+                        ourBrain.getCruiseInformation(sessionId, payloadContext);
+                        break;
+
+                    default:
+                        debug("Not a valid option");
+                }
+            }
+            else {
+                fbUtils.fbMessage(
+                    recipientId,
+                    'There is no cruise from this destination, kindly search for other options, type help'
+                );
             }
 
         }
