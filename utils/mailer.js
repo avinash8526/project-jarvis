@@ -1,6 +1,6 @@
 var mailer = {};
 
-mailer.mailDetails = function(destinationCode, to) {
+mailer.mailDetails = function(destinationCode, to, cb) {
 
 	var cruiseApi = require('../utils/cruiseApi')
 
@@ -49,6 +49,7 @@ mailer.mailDetails = function(destinationCode, to) {
 			       return true;
 			    }
 			});
+			cb();
 		};
 
 

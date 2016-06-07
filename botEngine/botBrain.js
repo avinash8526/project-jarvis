@@ -58,10 +58,12 @@ botBrain.actions = {
     getCruiseInformation : function(sessionId,context,cb){
         var buildLocationNotFoundMessage = function(responseObj) {
             try {
-                cms.buildButtonMessage('cruiseCodeNotFound', cms.send, sessionId, responseObj);
-            }
+                    cms.buildButtonMessage('cruiseCodeNotFound', cms.send, sessionId, responseObj);
+                    cb();
+                }
             catch (error) {
                 debug(error);
+                cb();
             }
 
         };
@@ -69,9 +71,11 @@ botBrain.actions = {
         var buildLocationFoundMessage = function(responseObj) {
             try {
                 cms.buildButtonMessage('locationFound', cms.send, sessionId, responseObj);
+                cb();
             }
             catch (error) {
                 debug(error);
+                cb();
             }
         };
 
@@ -85,8 +89,6 @@ botBrain.actions = {
             cruiseApi.getRandomCode("destination", buildLocationNotFoundMessage);
 
         }
-
-        cb();
     },
 
     getHotelInformation : function(sessionId,context,cb){
@@ -95,8 +97,16 @@ botBrain.actions = {
     },
 
     sendMail : function(sessionId,context,cb) {
-        mailer.mailDetails();
-        cb();
+        var destinatCode  = jarvisFilters.destinations[context.location.toLowerCase()];
+        var email  = context.email;
+        if(destinatCode && email){
+            mailer.mailDetails(destinatCode, email, cb);
+        }
+        else {
+            sendMessageToFb(sessionId,"Something went wrong");
+            cb();
+        }
+        
     },
 
     cleanContext : function(sessionId,context,cb) {
