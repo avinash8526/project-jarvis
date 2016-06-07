@@ -30,6 +30,7 @@ config.smtp = {
 config.apiCalls = {
     filterUrl : "http://cruise-api-service.us-west-2.int.expedia.com/search/sailings/filters",
     apiUrl : "http://terminal2.expedia.com/x/cruise/search/sailings",
+    facebookPostUrl : "https://graph.facebook.com/v2.6/feed",
     filtersJsonFile : "jarvisFilters.json",
     apiParameters : [
         "destinations", "sortBy", "sortOrder", "limit", "offset", "minPrice", "maxPrice","apikey"
