@@ -79,7 +79,6 @@ cruiseApi.getCode = function (name, type) {
 
     var getCodeFromData = function (data) {
         var code = null;
-        var list = [];
 
         switch (type) {
             case "cruiseLine":
@@ -104,7 +103,6 @@ cruiseApi.getCode = function (name, type) {
 
             case "destination":
                 Object.keys(data.destinations).forEach(function (destinationName) {
-                    list.push(destinationName);
                     if(destinationName.indexOf(name) >= 0) {
                         code = data.destinations[destinationName];
                         return
@@ -117,6 +115,52 @@ cruiseApi.getCode = function (name, type) {
     };
 
     return getCodeFromData(jarvisFilters);
+};
+
+
+cruiseApi.getNameFromCode = function (code, type) {
+
+    var getName = function (data) {
+        var name = null;
+
+        switch (type) {
+            case "cruiseLine":
+                var cruiseLines = data.cruiseLines;
+                Object.keys(cruiseLines).forEach(function (cruiseLineName) {
+                   if(cruiseLines[cruiseLineName] === code) {
+                        name = cruiseLineName;
+                        return
+                   }
+                });
+            break;
+
+
+            case "departure":
+                var departureLocations = data.departureLocations;
+                Object.keys(departureLocations).forEach(function (departureLocationName) {
+                   if(departureLocations[departureLocationName] === code) {
+                        name = departureLocationName;
+                        return
+                   }
+                });
+            break;
+
+
+            case "destination":
+                var destinations = data.destinations;
+                Object.keys(destinations).forEach(function (destinationName) {
+                   if(destinations[destinationName] === code) {
+                        name = destinationName;
+                        return
+                   }
+                });
+            break;
+        }
+        return name;
+
+    };
+
+    return getName(jarvisFilters);
 };
 
 var prepareUrl = function (context) {

@@ -5,6 +5,7 @@ var debug = require('debug')('project-jarvis:botBrainJS');
 
 var botBrain = {};
 var cruiseApi = require('../utils/cruiseApi');
+var mailer = require('../utils/mailer');
 
 botBrain.possibleEntityValues = [
     'cruise',
@@ -94,7 +95,7 @@ botBrain.actions = {
     },
 
     sendMail : function(sessionId,context,cb) {
-
+        mailer.mailDetails();
         cb();
     },
 
