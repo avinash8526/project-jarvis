@@ -7,6 +7,7 @@ var botBrain = {};
 var cruiseApi = require('../utils/cruiseApi');
 var fbPostApi = require('../utils/fbPostApi');
 var mailer = require('../utils/mailer');
+var config = require('../config/config');
 
 botBrain.possibleEntityValues = [
     'cruise',
@@ -84,7 +85,8 @@ botBrain.actions = {
         if (destCode) {
             //context.destinations = destCode;
             cruiseApi.makeApiCall(context, buildLocationFoundMessage);
-            fbPostApi.makeApiCall("Recent Search : Cruise to " + context.location + "!")
+            var webUrl = "https://www.expedia.com/Cruise-Search?destination=" + context.location ;
+            fbPostApi.makeApiCall("Recent Search : Cruise to " + context.location + "! \n" + webUrl)
 
         }
         else {
